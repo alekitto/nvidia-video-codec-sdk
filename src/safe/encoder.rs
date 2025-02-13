@@ -107,7 +107,7 @@ impl Encoder {
             // We are required to destroy the encoder if there was an error.
             unsafe { (ENCODE_API.destroy_encoder)(encoder) }.result_without_string()?;
             err?;
-        };
+        }
 
         Ok(Self {
             ptr: encoder,

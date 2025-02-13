@@ -16,8 +16,7 @@
 //! Usage follows this structure:
 //! 1. Initialize an [`Encoder`] with an encode device (such as CUDA).
 //! 2. Configure the encoder and start a [`Session`].
-//! 3. Create input [`Buffer`]s  (or [`RegisteredResource`])
-//!   and output [`Bitstream`]s.
+//! 3. Create input [`Buffer`]s  (or [`RegisteredResource`]) and output [`Bitstream`]s.
 //! 4. Encode frames with [`Session::encode_picture`].
 //!
 //! See the mentioned types for more info on how to use each.
@@ -33,6 +32,11 @@
     clippy::unwrap_used,
     missing_debug_implementations,
     missing_copy_implementations
+)]
+
+#![allow(
+    clippy::declare_interior_mutable_const,
+    clippy::borrow_interior_mutable_const
 )]
 
 pub mod safe;

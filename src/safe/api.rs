@@ -44,7 +44,7 @@ use crate::sys::nvEncodeAPI::{
 /// You should not interact with this directly.
 /// [`Encoder`](crate::Encoder) exposes much of the functionality and provides a
 /// nicer API.
-pub const ENCODE_API: LazyCell<EncodeAPI> = LazyCell::new(|| EncodeAPI::new());
+pub const ENCODE_API: LazyCell<EncodeAPI> = LazyCell::new(EncodeAPI::new);
 
 // Function type aliases to shorten later definitions.
 type OpenEncodeSession = unsafe extern "C" fn(*mut c_void, u32, *mut *mut c_void) -> NVENCSTATUS;
