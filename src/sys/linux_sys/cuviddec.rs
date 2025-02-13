@@ -8127,7 +8127,7 @@ pub use self::{
     cudaVideoSurfaceFormat_enum as cudaVideoSurfaceFormat,
     cuvidDecodeStatus_enum as cuvidDecodeStatus,
 };
-extern "C" {
+unsafe extern "C" {
     #[must_use]
     pub fn cuvidGetDecoderCaps(pdc: *mut CUVIDDECODECAPS) -> CUresult;
     #[must_use]

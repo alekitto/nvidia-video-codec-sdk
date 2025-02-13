@@ -10,15 +10,15 @@ use std::{
 
 use cudarc::driver::CudaDevice;
 use nvidia_video_codec_sdk::{
+    EncodeError,
+    Encoder,
+    ErrorKind,
     sys::nvEncodeAPI::{
         GUID,
         NV_ENC_BUFFER_FORMAT,
         NV_ENC_CODEC_H264_GUID,
         NV_ENC_INITIALIZE_PARAMS,
     },
-    EncodeError,
-    Encoder,
-    ErrorKind,
 };
 
 fn encode_blanks<P: AsRef<Path>>(

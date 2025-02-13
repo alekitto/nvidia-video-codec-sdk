@@ -1889,7 +1889,7 @@ impl _CUVIDPARSERPARAMS {
         __bindgen_bitfield_unit
     }
 }
-extern "C" {
+unsafe extern "C" {
     #[must_use]
     pub fn cuvidCreateVideoSource(
         pObj: *mut CUvideosource,

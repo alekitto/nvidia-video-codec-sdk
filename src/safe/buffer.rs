@@ -435,8 +435,10 @@ impl BufferLock<'_, '_> {
         // TODO: Make this safe by doing checks.
         // - Check that length of data fits (depends on format).
         // - Write pitched?
-        data.as_ptr()
-            .copy_to(self.data_ptr.cast::<u8>(), data.len());
+        unsafe {
+            data.as_ptr()
+                .copy_to(self.data_ptr.cast::<u8>(), data.len());
+        }
     }
 }
 

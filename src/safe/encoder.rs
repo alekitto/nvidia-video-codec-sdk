@@ -11,7 +11,6 @@ use cudarc::driver::CudaDevice;
 use super::{api::ENCODE_API, result::EncodeError, session::Session};
 use crate::sys::nvEncodeAPI::{
     GUID,
-    NVENCAPI_VERSION,
     NV_ENC_BUFFER_FORMAT,
     NV_ENC_CONFIG,
     NV_ENC_CONFIG_VER,
@@ -22,6 +21,7 @@ use crate::sys::nvEncodeAPI::{
     NV_ENC_PRESET_CONFIG,
     NV_ENC_PRESET_CONFIG_VER,
     NV_ENC_TUNING_INFO,
+    NVENCAPI_VERSION,
 };
 
 type Device = Arc<CudaDevice>;

@@ -9,6 +9,8 @@ use std::fmt::Debug;
 
 use super::{api::ENCODE_API, encoder::Encoder, result::EncodeError};
 use crate::{
+    EncoderInput,
+    EncoderOutput,
     sys::nvEncodeAPI::{
         GUID,
         NV_ENC_BUFFER_FORMAT,
@@ -24,8 +26,6 @@ use crate::{
         NV_ENC_PIC_STRUCT,
         NV_ENC_PIC_TYPE,
     },
-    EncoderInput,
-    EncoderOutput,
 };
 
 /// An encoding session to create input/output buffers and encode frames.

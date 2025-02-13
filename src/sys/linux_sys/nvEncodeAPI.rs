@@ -11471,7 +11471,7 @@ pub use self::{
     _NV_ENC_VUI_TRANSFER_CHARACTERISTIC as NV_ENC_VUI_TRANSFER_CHARACTERISTIC,
     _NV_ENC_VUI_VIDEO_FORMAT as NV_ENC_VUI_VIDEO_FORMAT,
 };
-extern "C" {
+unsafe extern "C" {
     #[must_use]
     pub fn NvEncOpenEncodeSession(
         device: *mut ::core::ffi::c_void,
