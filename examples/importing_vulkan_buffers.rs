@@ -6,6 +6,7 @@ use std::{
 
 use cudarc::driver::CudaDevice;
 use nvidia_video_codec_sdk::{
+    Encoder,
     sys::nvEncodeAPI::{
         NV_ENC_BUFFER_FORMAT::NV_ENC_BUFFER_FORMAT_ARGB,
         NV_ENC_CODEC_H264_GUID,
@@ -14,26 +15,26 @@ use nvidia_video_codec_sdk::{
         NV_ENC_PRESET_P1_GUID,
         NV_ENC_TUNING_INFO,
     },
-    Encoder,
 };
 use vulkano::{
+    VulkanLibrary,
     device::{
-        physical::PhysicalDeviceType,
         Device,
         DeviceCreateInfo,
         DeviceExtensions,
         QueueCreateInfo,
+        physical::PhysicalDeviceType,
     },
     instance::{Instance, InstanceCreateInfo},
     memory::{
         DeviceMemory,
         ExternalMemoryHandleType,
         ExternalMemoryHandleTypes,
-        MappedDeviceMemory,
+        MappedMemoryRange,
         MemoryAllocateInfo,
+        MemoryMapInfo,
         MemoryPropertyFlags,
     },
-    VulkanLibrary,
 };
 
 /// Returns the color `(r, g, b, alpha)` of a pixel on the screen relative to
@@ -307,7 +308,7 @@ fn create_buffer(
     let size = (width * height * 4) as u64;
 
     // Allocate memory with Vulkan.
-    let memory = DeviceMemory::allocate(vulkan_device, MemoryAllocateInfo {
+    let mut memory = DeviceMemory::allocate(vulkan_device, MemoryAllocateInfo {
         allocation_size: size,
         memory_type_index,
         export_handle_types: ExternalMemoryHandleTypes::OPAQUE_FD,
@@ -315,23 +316,37 @@ fn create_buffer(
     })
     .expect("There should be space to allocate vulkan memory on the device");
 
-    // Map and write to the memory.
-    let mapped_memory = MappedDeviceMemory::new(memory, 0..size)
+    memory
+        .map(MemoryMapInfo {
+            size,
+            ..Default::default()
+        })
         .expect("There should be memory available to map and write to");
+    let state = memory
+        .mapping_state()
+        .expect("There should be memory available to map and write to");
+
+    let content =
+        unsafe { std::slice::from_raw_parts_mut(state.ptr().as_ptr() as *mut u8, size as usize) };
+    generate_test_input(content, width, height, i, i_max);
+
     unsafe {
-        let content = mapped_memory
-            .write(0..size)
-            .expect("The physical device and memory type is HOST_VISIBLE");
-        generate_test_input(content, width, height, i, i_max);
-        mapped_memory.flush_range(0..size).expect(
-            "There should be no other devices writing to this memory and size should also fit \
-             within the size",
-        );
+        memory
+            .flush_range(MappedMemoryRange {
+                size,
+                ..Default::default()
+            })
+            .expect(
+                "There should be no other devices writing to this memory and size should also fit \
+                 within the size",
+            );
     }
 
     // Export the memory.
-    mapped_memory
-        .unmap()
+    memory
+        .unmap(Default::default())
+        .expect("There should be no other devices writing to this memory");
+    memory
         .export_fd(ExternalMemoryHandleType::OpaqueFd)
         .expect("The memory should be able to be turned into a file handle if we are on UNIX")
 }

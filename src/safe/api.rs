@@ -1,16 +1,10 @@
 //! Defines `ENCODE_API`, which is a lazy static of [`EncodeAPI`].
 
 use core::ffi::{c_int, c_void};
+use std::cell::LazyCell;
 
 use crate::sys::nvEncodeAPI::{
-    NvEncodeAPICreateInstance,
-    NvEncodeAPIGetMaxSupportedVersion,
     GUID,
-    NVENCAPI_MAJOR_VERSION,
-    NVENCAPI_MINOR_VERSION,
-    NVENCSTATUS,
-    NV_ENCODE_API_FUNCTION_LIST,
-    NV_ENCODE_API_FUNCTION_LIST_VER,
     NV_ENC_BUFFER_FORMAT,
     NV_ENC_CAPS_PARAM,
     NV_ENC_CREATE_BITSTREAM_BUFFER,
@@ -30,22 +24,27 @@ use crate::sys::nvEncodeAPI::{
     NV_ENC_PIC_PARAMS,
     NV_ENC_PRESET_CONFIG,
     NV_ENC_RECONFIGURE_PARAMS,
-    NV_ENC_REGISTERED_PTR,
     NV_ENC_REGISTER_RESOURCE,
+    NV_ENC_REGISTERED_PTR,
     NV_ENC_RESTORE_ENCODER_STATE_PARAMS,
     NV_ENC_SEQUENCE_PARAM_PAYLOAD,
     NV_ENC_STAT,
     NV_ENC_TUNING_INFO,
+    NV_ENCODE_API_FUNCTION_LIST,
+    NV_ENCODE_API_FUNCTION_LIST_VER,
+    NVENCAPI_MAJOR_VERSION,
+    NVENCAPI_MINOR_VERSION,
+    NVENCSTATUS,
+    NvEncodeAPICreateInstance,
+    NvEncodeAPIGetMaxSupportedVersion,
 };
 
-lazy_static! {
-    /// A lazy static for the Encoder API.
-    ///
-    /// You should not interact with this directly.
-    /// [`Encoder`](crate::Encoder) exposes much of the functionality and provides a nicer API.
-    pub static ref ENCODE_API: EncodeAPI =
-        EncodeAPI::new();
-}
+/// Encoder API.
+///
+/// You should not interact with this directly.
+/// [`Encoder`](crate::Encoder) exposes much of the functionality and provides a
+/// nicer API.
+pub const ENCODE_API: LazyCell<EncodeAPI> = LazyCell::new(|| EncodeAPI::new());
 
 // Function type aliases to shorten later definitions.
 type OpenEncodeSession = unsafe extern "C" fn(*mut c_void, u32, *mut *mut c_void) -> NVENCSTATUS;
